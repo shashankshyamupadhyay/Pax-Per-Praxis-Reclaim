@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  text-align: center;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+}
