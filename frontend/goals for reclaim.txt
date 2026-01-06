@@ -1,0 +1,5 @@
+Commute duration (minutes)
+
+Energy level: Low / Medium / High
+
+Goal: Learn / Reflect / Relax

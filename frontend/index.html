@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <title>Reclaim - Turn Commute Time Into Productive Minutes</title>
   <style>
     * {
@@ -12,13 +13,49 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      line-height: 1.6;
-      color: #1a1a1a;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #e8ecf3);
+      color: #1f2937;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+     #output {
+          background: white;
+          padding: 20px 25px;
+          border-radius: 16px;
+          margin-top: 25px;
+          line-height: 1.6;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+          font-size: 0.95rem;
+    }
+
+     #output ol {
+          margin-left: 20px;
+    }
+
+     #output li {
+          margin-bottom: 8px;
+    }   
+
+    .plan-cards {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.card {
+  padding: 14px;
+  border-radius: 10px;
+  background: #f4f6ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  margin: 6px 0;
+}
+
 
     /* Animated background elements */
     .bg-animation {
@@ -27,7 +64,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
+      z-index: -1;
       overflow: hidden;
     }
 
@@ -234,6 +271,102 @@
         grid-template-columns: 1fr;
       }
     }
+   
+/* ======================
+   Reclaim App Card
+====================== */
+
+.app-card {
+  max-width: 520px;
+  margin: 0 auto 80px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.app-card h2 {
+  text-align: center;
+  color: #4f46e5;
+  margin-bottom: 8px;
+}
+
+.app-card .subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.app-group {
+  margin-bottom: 18px;
+}
+
+.app-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.app-group input,
+.app-group select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.app-group input:focus,
+.app-group select:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.features {
+  margin-top: 40px;
+}
+
+
+/* Output */
+
+#output {
+  margin-top: 24px;
+  padding: 18px;
+  background: #f9fafb;
+  border-radius: 14px;
+  border-left: 4px solid #6366f1;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* Generate Button */
+
+.generate-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+}
+
+
+
   </style>
 </head>
 <body>
@@ -250,8 +383,42 @@
 
   <main class="container">
     <div class="hero-section">
-      <button id="startBtn">Start Reclaiming</button>
+  <div class="app-card">
+    <h2>Reclaim Your Commute</h2>
+    <p class="subtitle">
+      Turn unavoidable travel time into learning, reflection, or rest.
+    </p>
+
+    <div class="app-group">
+      <label for="duration">Commute duration (minutes)</label>
+      <input id="duration" type="number" placeholder="e.g. 90" />
     </div>
+
+    <div class="app-group">
+      <label for="energy">Your energy level</label>
+      <select id="energy">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+
+    <div class="app-group">
+      <label for="goal">Primary goal</label>
+      <select id="goal">
+        <option value="Learn">Learn</option>
+        <option value="Reflect">Reflect</option>
+        <option value="Relax">Relax</option>
+      </select>
+    </div>
+
+    <button class="generate-btn" onclick="generatePlan()">
+      Generate My Plan ✨
+    </button>
+
+    <div id="output"></div>
+  </div>
+</div>
 
     <div class="features">
       <div class="feature-card">
@@ -281,24 +448,28 @@
   </footer>
 
   <script>
-    document.getElementById('startBtn').addEventListener('click', function() {
-      // Add your app logic here
-      alert('Let\'s start reclaiming your time!');
-      // You can redirect to your main app or open a modal
-      // window.location.href = 'app.html';
+  // Simple hover effects (keep this)
+  const featureCards = document.querySelectorAll('.feature-card');
+  featureCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.background = 'rgba(255, 255, 255, 1)';
     });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.background = 'rgba(255, 255, 255, 0.95)';
+    });
+  });
+</script>
 
-    // Add some interactive hover effects
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach(card => {
-      card.addEventListener('mouseenter', function() {
-        this.style.background = 'rgba(255, 255, 255, 1)';
-      });
-      
-      card.addEventListener('mouseleave', function() {
-        this.style.background = 'rgba(255, 255, 255, 0.95)';
-      });
-    });
-  </script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+
+
 </body>
 </html>
