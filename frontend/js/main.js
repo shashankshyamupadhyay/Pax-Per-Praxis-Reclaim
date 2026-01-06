@@ -76,13 +76,14 @@ Rules:
   outputDiv.innerText = "Generating plan...";
 
   try {
-    const response = await fetch("http://localhost:3000/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
+  const response = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  });
+
 
     if (!response.ok) {
       const errorText = await response.text();
