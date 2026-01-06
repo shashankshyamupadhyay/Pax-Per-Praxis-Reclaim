@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>Reclaim - Turn Commute Time Into Productive Minutes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #e8ecf3);
+      color: #1f2937;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+     #output {
+          background: white;
+          padding: 20px 25px;
+          border-radius: 16px;
+          margin-top: 25px;
+          line-height: 1.6;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+          font-size: 0.95rem;
+    }
+
+     #output ol {
+          margin-left: 20px;
+    }
+
+     #output li {
+          margin-bottom: 8px;
+    }   
+
+    .plan-cards {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.card {
+  padding: 14px;
+  border-radius: 10px;
+  background: #f4f6ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  margin: 6px 0;
+}
+
+
+    /* Animated background elements */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: -100px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .bg-circle:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      top: 50%;
+      right: -50px;
+      animation-delay: 3s;
+    }
+
+    .bg-circle:nth-child(3) {
+      width: 400px;
+      height: 400px;
+      bottom: -150px;
+      left: 30%;
+      animation-delay: 6s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      padding: 80px 20px 60px;
+      text-align: center;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    header h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+      letter-spacing: -2px;
+    }
+
+    header p {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Main Section */
+    main {
+      padding: 40px 20px;
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    #startBtn {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 20px 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #startBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      background: #f8f8f8;
+    }
+
+    #startBtn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Features Section */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 80px;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      animation: fadeIn 1s ease-out 0.8s both;
+    }
+
+    footer p {
+      font-size: 0.95rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+
+      header p {
+        font-size: 1.2rem;
+      }
+
+      #startBtn {
+        padding: 18px 40px;
+        font-size: 1.1rem;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+   
+/* ======================
+   Reclaim App Card
+====================== */
+
+.app-card {
+  max-width: 520px;
+  margin: 0 auto 80px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.app-card h2 {
+  text-align: center;
+  color: #4f46e5;
+  margin-bottom: 8px;
+}
+
+.app-card .subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.app-group {
+  margin-bottom: 18px;
+}
+
+.app-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.app-group input,
+.app-group select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.app-group input:focus,
+.app-group select:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.features {
+  margin-top: 40px;
+}
+
+
+/* Output */
+
+#output {
+  margin-top: 24px;
+  padding: 18px;
+  background: #f9fafb;
+  border-radius: 14px;
+  border-left: 4px solid #6366f1;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* Generate Button */
+
+.generate-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+  </div>
+
+  <header>
+    <h1>Reclaim</h1>
+    <p>Turn commute time into reclaimed minutes.</p>
+  </header>
+
+  <main class="container">
+    <div class="hero-section">
+  <div class="app-card">
+    <h2>Reclaim Your Commute</h2>
+    <p class="subtitle">
+      Turn unavoidable travel time into learning, reflection, or rest.
+    </p>
+
+    <div class="app-group">
+      <label for="duration">Commute duration (minutes)</label>
+      <input id="duration" type="number" placeholder="e.g. 90" />
+    </div>
+
+    <div class="app-group">
+      <label for="energy">Your energy level</label>
+      <select id="energy">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+
+    <div class="app-group">
+      <label for="goal">Primary goal</label>
+      <select id="goal">
+        <option value="Learn">Learn</option>
+        <option value="Reflect">Reflect</option>
+        <option value="Relax">Relax</option>
+      </select>
+    </div>
+
+    <button class="generate-btn" onclick="generatePlan()">
+      Generate My Plan ✨
+    </button>
+
+    <div id="output"></div>
+  </div>
+</div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Track Your Time</h3>
+        <p>Automatically monitor your daily commute and see exactly how much time you can reclaim for what matters.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Smart Suggestions</h3>
+        <p>Get personalized recommendations for productive activities tailored to your commute duration and preferences.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Visualize Progress</h3>
+        <p>Watch your reclaimed time add up with beautiful analytics and celebrate your productivity gains.</p>
+      </div>
+    </div>
+
+
+  </main>
+
+  <footer>
+    <p>Built with ❤️ by Team Pax Per Praxis for EurekaHacks 2026</p>
+  </footer>
+
+  <script>
+  // Simple hover effects (keep this)
+  const featureCards = document.querySelectorAll('.feature-card');
+  featureCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.background = 'rgba(255, 255, 255, 1)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.background = 'rgba(255, 255, 255, 0.95)';
+    });
+  });
+</script>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+
+<script src="config.js"></script>
+<script src="main.js"></script>
+
+
+</body>
+</html>

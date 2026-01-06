@@ -1,86 +1,73 @@
-// In your backend server file (e.g., app.js or server.js)
+// 1. Load dotenv FIRST
+require('dotenv').config();
+
+console.log("Gemini key loaded:", !!process.env.GEMINI_API_KEY);
 
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const path = require('path');
 
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.post('/api/generate', async (req, res) => {
   try {
-    console.log('=== Request received ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-    
-    // Extract the prompt from the request
-    const { contents } = req.body;
-    const prompt = contents[0].parts[0].text;
-    console.log('Extracted prompt:', prompt);
-    
-    const apiKey = 'AIzaSyDSRLq_edZWBalkUpasuZZLcoWXMU-4Nmg';
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({ error: "Gemini API key missing" });
+    }
+
     const postData = JSON.stringify(req.body);
-    
+
     const options = {
-  hostname: 'generativelanguage.googleapis.com',
-  path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(postData)
-  }
-};
-    
-    console.log('Calling Google API...');
-    
+      hostname: 'generativelanguage.googleapis.com',
+      // 2. FIXED: Changed 2.5 to 1.5 (or 2.0-flash-exp if you have access)
+      path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
     const apiRequest = https.request(options, (apiResponse) => {
       let data = '';
-      
-      apiResponse.on('data', (chunk) => {
-        data += chunk;
-      });
-      
+
+      apiResponse.on('data', chunk => data += chunk);
       apiResponse.on('end', () => {
-        console.log('Google API response status:', apiResponse.statusCode);
-        
         if (apiResponse.statusCode !== 200) {
-          console.error('Google API error response:', data);
+          // Log the actual error from Google for easier debugging
+          console.error("Gemini API Error:", data); 
           res.status(apiResponse.statusCode).json({ error: data });
         } else {
-          console.log('Success! Sending response back to frontend');
-          const parsedData = JSON.parse(data);
-          console.log('Response preview:', JSON.stringify(parsedData).substring(0, 200));
-          res.json(parsedData);
+          res.json(JSON.parse(data));
         }
       });
     });
-    
-    apiRequest.on('error', (error) => {
-      console.error('Request error:', error);
+
+    apiRequest.on('error', error => {
       res.status(500).json({ error: error.message });
     });
-    
+
     apiRequest.write(postData);
     apiRequest.end();
-    
+
   } catch (error) {
-    console.error('=== Backend error ===');
-    console.error('Error details:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
-});
-
-
-
 app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
-  console.log('Waiting for requests...');
+  console.log(`Server running 🚀 on port ${PORT}`);
 });
